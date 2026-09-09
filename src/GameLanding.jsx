@@ -577,23 +577,16 @@ function About() {
     </div>
   );
 
-  const Group = ({ title, children, className = "" }) => (
-    <div
-      className={`relative rounded-[24px] border border-white/60 bg-white/[0.02] px-5 py-5 ${className}`}
-    >
-      <div className="absolute -top-3 left-6 bg-[#1a2028] px-2 text-sm text-white">
-        {title}
-      </div>
-
-      {children}
-    </div>
-  );
-
+  const Group = ({ children, className = "" }) => (
+  <div className={`px-5 py-5 ${className}`}>
+    {children}
+  </div>
+);
   const people = [
     // Management
     { name: "Alexey Aleshin", role: "CEO", img: "/media/Ellipse 28.png" },
     { name: "Ivan Kalnaus", role: "Project manager", img: "/media/Ellipse 24.png" },
-    { name: "Konstantin", role: "Marketing Manager", img: "/media/Ellipse 29.png" },
+
 
     // Design
     { name: "Pavel Puzyna", role: "Lead Narrative designer", img: "/media/Ellipse 30.png" },
@@ -601,7 +594,8 @@ function About() {
     { name: "Maxim Dubrovsky", role: "Tech Game designer", img: "/media/Ellipse 6.png" },
     { name: "Gleb Kovalevich", role: "UIUX designer", img: "/media/Ellipse 1.png" },
     { name: "Alexander Lyulchenko", role: "Sound designer", img: "/media/Ellipse 7.png" },
-    { name: "Ivan Fedotov", role: "Designer", img: "/media/Ellipse 16.png" },
+    { name: "Vladyslav Synookyi", role: "Sound designer", img: "/media/Ellipse 34.png" },
+
 
     // Tech Art
     { name: "Anton Zarubin", role: "TechArt", img: "/media/Ellipse 2.png" },
@@ -617,12 +611,13 @@ function About() {
     { name: "Daniil Yuminov", role: "Art Director", img: "/media/Ellipse 10.png" },
     { name: "Vyacheslav Grigorenko", role: "2D concept artist", img: "/media/Ellipse 11.png" },
     { name: "Vitaliy Shemyakin", role: "2D concept artist", img: "/media/Ellipse 19.png" },
-    { name: "Abdurashid Rakhimberdiev", role: "2D concept artist", img: "/media/Ellipse 4.png" },
+    { name: "Ekaterina Shumilova", role: "2D artist", img: "/media/Ellipse 31.png" },
+    { name: "Sergii Dykhne", role: "2D artist", img: "/media/Ellipse 33.png" },
     { name: "Ewelina Dobrzyanska", role: "2D concept artist", img: "/media/Ellipse 12.png" },
     { name: "Igor Kirichenko", role: "2D illustrator artist", img: "/media/Ellipse 20.png" },
 
     // 3D
-    { name: "Aleksei Barash", role: "3D Lead", img: "/media/Ellipse 21.png" },
+    { name: "Simon Shcherbyna", role: "3D Lead", img: "/media/Ellipse 32.png" },
     { name: "Artyom Stikhin", role: "3D artist", img: "/media/Ellipse 13.png" },
     { name: "Artyom Alshevsky", role: "3D artist", img: "/media/Ellipse 22.png" },
     { name: "Vladislav Kiselev", role: "3D artist texture", img: "/media/Ellipse 5.png" },
@@ -630,92 +625,44 @@ function About() {
   ];
 
   return (
-    <section
-      id="team"
-      ref={ref}
-      className={`py-10 bg-[#0B0F16] transition-all duration-700 ${
-        visible ? "opacity-100" : "opacity-0"
-      }`}
-    >
-      <div className="mx-auto max-w-[1180px] px-4">
-        <div className="rounded-[42px] border border-white/40 bg-white/[0.04] p-6 backdrop-blur-xl">
+  <section
+    id="team"
+    ref={ref}
+    className={`py-10 bg-[#0B0F16] transition-all duration-700 ${
+      visible ? "opacity-100" : "opacity-0"
+    }`}
+  >
+    <div className="mx-auto max-w-[1180px] px-4">
+      <div className="rounded-[42px] border border-white/40 bg-white/[0.04] p-6 backdrop-blur-xl">
 
-          {/* ВЕРХ */}
-          <div className="grid gap-6 lg:grid-cols-[1fr_0.95fr] lg:items-start">
-            <div>
-              <h2 className="text-[34px] font-bold leading-[0.95] text-white lg:text-[64px]">
-                Experienced team
-                <br />
-                you can trust
-              </h2>
+        {/* ВЕРХНИЙ ТЕКСТ */}
+        <div>
+          <h2 className="text-[34px] font-bold leading-[0.95] text-white lg:text-[64px]">
+            Experienced team
+            <br />
+            you can trust
+          </h2>
 
-              <p className="mt-6 max-w-[520px] text-sm leading-relaxed text-white/80">
-                Our core team comes from top studios like Wargaming, Playrix,
-                Gaya and Ubisoft. With strong backgrounds in both AAA and
-                large-scale mobile projects, we combine industry best practices
-                and deep market knowledge to deliver high-quality,
-                commercially successful games.
-              </p>
-            </div>
-
-            <Group title="Management team" className="lg:mt-10">
-              <div className="grid grid-cols-3 gap-6">
-                {people.slice(0, 3).map((p, i) => (
-                  <Person key={i} person={p} />
-                ))}
-              </div>
-            </Group>
-          </div>
-
-          <div className="mt-6 space-y-6">
-
-            <Group title="Design team">
-              <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
-                {people.slice(3, 9).map((p, i) => (
-                  <Person key={i} person={p} />
-                ))}
-              </div>
-            </Group>
-
-            <div className="grid gap-6 lg:grid-cols-[1.35fr_0.65fr]">
-  <Group title="Development team">
-    <div className="grid grid-cols-2 gap-5 lg:grid-cols-4">
-      {people.slice(11, 15).map((p, i) => (
-        <Person key={i} person={p} />
-      ))}
-    </div>
-  </Group>
-
-  <Group title="Tech Art">
-    <div className="grid grid-cols-2 gap-5">
-      {people.slice(9, 11).map((p, i) => (
-        <Person key={i} person={p} />
-      ))}
-    </div>
-  </Group>
-</div>
-
-            <Group title="2d team">
-              <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
-                {people.slice(15, 21).map((p, i) => (
-                  <Person key={i} person={p} />
-                ))}
-              </div>
-            </Group>
-
-            <Group title="3d team">
-              <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
-                {people.slice(21, 27).map((p, i) => (
-                  <Person key={i} person={p} />
-                ))}
-              </div>
-            </Group>
-
-          </div>
+          <p className="mt-6 max-w-[520px] text-sm leading-relaxed text-white/80">
+            Our core team comes from top studios like Wargaming, Playrix,
+            Gaya and Ubisoft. With strong backgrounds in both AAA and
+            large-scale mobile projects, we combine industry best practices
+            and deep market knowledge to deliver high-quality,
+            commercially successful games.
+          </p>
         </div>
+
+        {/* ВСЯ КОМАНДА */}
+        <div className="mt-12 grid grid-cols-2 gap-x-8 gap-y-14 sm:grid-cols-3 lg:grid-cols-6">
+          {people.map((p, i) => (
+            <Person key={i} person={p} />
+          ))}
+        </div>
+
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 }
 
 /* ====================== Media / FAQ / Newsletter ====================== */
