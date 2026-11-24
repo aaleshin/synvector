@@ -54,7 +54,7 @@ export const MEDIA = {
       img: "/media/slide4.webp",
     },
   ],
-  trailerYouTubeId: "ZgoIo1m_F_c",
+  trailerYouTubeId: "yUzC9Xoque8",
   supportedBy: [
     { name: "Vaiz", logo: "/media/partner-supported.webp", href: "https://vaiz.com/" }
   ],
@@ -66,6 +66,10 @@ function useInView({ threshold = 0.2 } = {}) {
   const [visible, setVisible] = useState(false);
   const ref = useRef(null);
   useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return;
+    }
     const obs = new IntersectionObserver(
       ([entry]) => setVisible(entry.isIntersecting),
       { threshold }
@@ -115,8 +119,6 @@ export default function GameLanding() {
       if (MEDIA?.logos?.hero) addLink({ rel: 'preload', as: 'image', href: MEDIA.logos.hero });
 
       // Preconnects for external embeds/assets
-      addLink({ rel: 'preconnect', href: 'https://www.youtube.com' });
-      addLink({ rel: 'preconnect', href: 'https://i.ytimg.com' });
       addLink({ rel: 'preconnect', href: 'https://t.me' });
       addLink({ rel: 'preconnect', href: 'https://discord.gg' });
     } catch { }
@@ -346,7 +348,7 @@ function Hero() {
 <div className="relative z-10 mx-auto flex min-h-screen max-w-7xl flex-col px-6 pt-64 pb-4">
   <div className="flex flex-1 flex-col justify-end pb-4">
           <div className="ml-auto mb-6 max-w-[380px] rounded-2xl bg-black/25 px-5 py-3 text-left text-sm sm:text-xs leading-tight text-white backdrop-blur-md ring-1 ring-white/60">
-            Mount & Blade in space - Action 3D RPG with massive battles, tactical pause, customizable fleets, co-op and moral contracts.
+            Mount & Blade in space - Action 3D RPG with massive battles, tactical pause, customizable fleets and moral contracts.
           </div>
 
           <img
@@ -400,12 +402,7 @@ function SocialButtons() {
             </h2>
 
             <p className="mt-5 text-[17px] leading-relaxed text-white/85 md:text-base md:leading-relaxed">
-              SYNVECTOR is a sci-fi action RPG where you command an independent
-              mercenary fleet in a galaxy torn by war and betrayal. Switch
-              between real-time third-person combat and tactical pause,
-              customize your ships, and team up in 4-player co-op. Your choices
-              and reputation shape missions, factions, and the fate of the
-              stars.
+              SYNVECTOR is a single-player sci-fi action RPG set in a living galaxy torn by war and political conflict. Pilot your ship in real-time 3D battles, switch between squadron leaders, and use the tactical tablet to direct your fleet. Explore star systems, take on map-based and text-based quests, and shape relations among civilizations and hidden races.
             </p>
           </div>
 
@@ -431,12 +428,10 @@ function InfoBlocks() {
         <div className="relative z-10 max-w-[560px]">
           <div>
             <h2 className="text-4xl font-bold text-white md:text-5xl">
-              Play Co-op
+              Tactical Fleet Command
             </h2>
             <p className="mt-4 max-w-[430px] text-sm leading-relaxed text-white/75">
-              Team up with friends and share command of a fleet. Each player
-              controls a different squad, coordinating strategies for large-scale
-              battles. Victory feels even better when achieved together.
+              Pilot your flagship in real-time combat, switch between squadron leaders, and use the tactical tablet to issue movement orders and manage squad behavior.
             </p>
           </div>
 
@@ -445,9 +440,7 @@ function InfoBlocks() {
               Fleet Customization
             </h2>
             <p className="mt-4 max-w-[460px] text-sm leading-relaxed text-white/75">
-              Build the fleet of your dreams by fusing human and alien
-              technology. Equip your ships with experimental weapons and unique
-              modules to create unstoppable tactical combos.
+              Manage your inventory, transfer items, and equip your flagships with weapons and modules. Compare equipment and prepare your fleet for the next expedition.
             </p>
           </div>
         </div>
@@ -556,26 +549,43 @@ function InfoRow({ title, text, img, flip }) {
 /* =================================================================== */
 
 /* ===================== About: Collage + Team Sidebar ===================== */
-function About() {
-  const [ref, visible] = useInView({ threshold: 0.2 });
+function Person({ person }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const initials = person.name.split(/\s+/).map((part) => part[0]).join("");
 
-  const Person = ({ person }) => (
-    <div className="flex flex-col items-center text-center min-w-0">
-      <img
-        src={person.img}
-        alt={person.name}
-        className="h-[72px] w-[72px] rounded-full object-cover"
-      />
+  useEffect(() => {
+    setImageFailed(false);
+  }, [person.img]);
 
-      <div className="mt-2 max-w-[100px] text-[12px] leading-tight text-cyan-300">
+  return (
+    <div className="flex min-w-0 flex-col items-center rounded-2xl border border-white/20 bg-black/20 px-1 py-3 text-center sm:px-2 sm:py-4">
+      {person.img && !imageFailed ? (
+        <img
+          src={person.img}
+          alt={person.name}
+          onError={() => setImageFailed(true)}
+          className="h-[100px] w-[100px] shrink-0 rounded-full object-cover object-center"
+        />
+      ) : (
+        <div
+          aria-hidden="true"
+          className="flex h-[100px] w-[100px] shrink-0 items-center justify-center rounded-full bg-black/20 text-[24px] text-cyan-300"
+        >
+          {initials}
+        </div>
+      )}
+      <div className="mt-2 w-full min-w-0 text-[14px] leading-[20px] text-cyan-300 [overflow-wrap:anywhere]">
         {person.name}
       </div>
-
-      <div className="mt-1 max-w-[100px] text-[10px] leading-tight text-white">
+      <div className="mt-1 w-full min-w-0 text-[11.5px] leading-[16px] text-white [overflow-wrap:anywhere]">
         {person.role}
       </div>
     </div>
   );
+}
+
+function About() {
+  const [ref, visible] = useInView({ threshold: 0.2 });
 
   const Group = ({ children, className = "" }) => (
   <div className={`px-5 py-5 ${className}`}>
@@ -583,45 +593,30 @@ function About() {
   </div>
 );
   const people = [
-    // Management
-    { name: "Alexey Aleshin", role: "CEO", img: "/media/Ellipse 28.png" },
-    { name: "Ivan Kalnaus", role: "Project manager", img: "/media/Ellipse 24.png" },
-
-
-    // Design
-    { name: "Pavel Puzyna", role: "Lead Narrative designer", img: "/media/Ellipse 30.png" },
-    { name: "Maxim Novikov", role: "Game designer", img: "/media/Ellipse 15.png" },
-    { name: "Maxim Dubrovsky", role: "Tech Game designer", img: "/media/Ellipse 6.png" },
-    { name: "Gleb Kovalevich", role: "UIUX designer", img: "/media/Ellipse 1.png" },
-    { name: "Alexander Lyulchenko", role: "Sound designer", img: "/media/Ellipse 7.png" },
-    { name: "Vladyslav Synookyi", role: "Sound designer", img: "/media/Ellipse 34.png" },
-
-
-    // Tech Art
-    { name: "Anton Zarubin", role: "TechArt", img: "/media/Ellipse 2.png" },
-    { name: "Egor Kirik", role: "VFX/TechArt", img: "/media/Ellipse 17.png" },
-
-    // Development
-{ name: "Andrey Shmanatov", role: "CTO", img: "/media/Ellipse 3.png" },
-{ name: "Anna Potetenko", role: "Developer/UX", img: "/media/Ellipse 8.png" },
-{ name: "Margarita Chebotareva", role: "Developer", img: "/media/Ellipse 9.png" },
-{ name: "Alexander Poretsky", role: "Developer", img: "/media/Ellipse 18.png" },
-
-    // 2D
-    { name: "Daniil Yuminov", role: "Art Director", img: "/media/Ellipse 10.png" },
-    { name: "Vyacheslav Grigorenko", role: "2D concept artist", img: "/media/Ellipse 11.png" },
-    { name: "Vitaliy Shemyakin", role: "2D concept artist", img: "/media/Ellipse 19.png" },
-    { name: "Ekaterina Shumilova", role: "2D artist", img: "/media/Ellipse 31.png" },
-    { name: "Sergii Dykhne", role: "2D artist", img: "/media/Ellipse 33.png" },
-    { name: "Ewelina Dobrzyanska", role: "2D concept artist", img: "/media/Ellipse 12.png" },
-    { name: "Igor Kirichenko", role: "2D illustrator artist", img: "/media/Ellipse 20.png" },
-
-    // 3D
+    { name: "Aleksey Aleshin", role: "Founder", img: "/media/Ellipse 28.png" },
+    { name: "Anastasia Gorelina", role: "Producer", img: "/media/anastasia-gorelina.png" },
+    { name: "Maksym Novikov", role: "Game designer", img: "/media/Ellipse 15.png" },
+    { name: "Maksim Dubrovsky", role: "Game designer", img: "/media/Ellipse 6.png" },
+    { name: "Pavel Puzyna", role: "Lead Narrative Designer", img: "/media/Ellipse 30.png" },
+    { name: "Ivan Kalnaus", role: "Project Manager", img: "/media/Ellipse 24.png" },
+    { name: "Andrey Shmanatov", role: "Dev Lead / CTO", img: "/media/Ellipse 3.png" },
+    { name: "Hanna Patetenka", role: "Developer / UX", img: "/media/Ellipse 8.png" },
+    { name: "Aliaksandr Paretski", role: "Developer", img: "/media/Ellipse 18.png" },
+    { name: "Margarita Chebotareva", role: "Developer", img: "/media/Ellipse 9.png" },
     { name: "Simon Shcherbyna", role: "3D Lead", img: "/media/Ellipse 32.png" },
-    { name: "Artyom Stikhin", role: "3D artist", img: "/media/Ellipse 13.png" },
-    { name: "Artyom Alshevsky", role: "3D artist", img: "/media/Ellipse 22.png" },
+    { name: "Artem Stihin", role: "3D Artist", img: "/media/Ellipse 13.png" },
+    { name: "Artyom Alshevsky", role: "3D Artist", img: "/media/Ellipse 22.png" },
+    { name: "Sergei Chirko", role: "3D Artist" },
     { name: "Vladislav Kiselev", role: "3D artist texture", img: "/media/Ellipse 5.png" },
-    { name: "Sergey Dolzhenko", role: "VFX / Rigger", img: "/media/Ellipse 23.png" },
+    { name: "Daniil Yuminov", role: "Art Director", img: "/media/Ellipse 10.png" },
+    { name: "Viacheslav Grigorenko", role: "2D Lead / UI/UX Designer", img: "/media/Ellipse 11.png" },
+    { name: "Sergii Dykhne", role: "2D Concept Artist", img: "/media/Ellipse 33.png" },
+    { name: "Ekaterina Shumilova", role: "2D Concept Artist", img: "/media/Ellipse 31.png" },
+    { name: "Gleb Kovalevich", role: "UI/UX Designer", img: "/media/Ellipse 1.png" },
+    { name: "Anton Zarubin", role: "Technical Artist", img: "/media/Ellipse 2.png" },
+    { name: "Sergey Dolzhenko", role: "Cinematic 3D Artist / VFX / Rigger", img: "/media/Ellipse 23.png" },
+    { name: "Vladyslav Synookyi", role: "Sound Designer", img: "/media/Ellipse 34.png" },
+    { name: "Vadym Yaroshenko", role: "VFX Artist" },
   ];
 
   return (
@@ -653,9 +648,9 @@ function About() {
         </div>
 
         {/* ВСЯ КОМАНДА */}
-        <div className="mt-12 grid grid-cols-2 gap-x-8 gap-y-14 sm:grid-cols-3 lg:grid-cols-6">
-          {people.map((p, i) => (
-            <Person key={i} person={p} />
+        <div className="mt-12 grid grid-cols-2 gap-x-2 gap-y-6 sm:grid-cols-3 sm:gap-x-8 sm:gap-y-14 lg:grid-cols-6">
+          {people.map((p) => (
+            <Person key={p.name} person={p} />
           ))}
         </div>
 
@@ -668,6 +663,31 @@ function About() {
 /* ====================== Media / FAQ / Newsletter ====================== */
 function Media() {
   const [ref, visible] = useInView({ threshold: 0.15 });
+  const playerRef = useRef(null);
+  const [loadTrailer, setLoadTrailer] = useState(false);
+
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") {
+      setLoadTrailer(true);
+      return;
+    }
+
+    const player = playerRef.current;
+    if (!player) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setLoadTrailer(true);
+          observer.disconnect();
+        }
+      },
+      { root: null, rootMargin: "300px 0px", threshold: 0 }
+    );
+    observer.observe(player);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section
       id="media"
@@ -681,14 +701,35 @@ function Media() {
           Watch the Trailer
         </h2>
 
-        <div className="mt-8 aspect-video overflow-hidden bg-black">
-          <video
+        <div ref={playerRef} className="mt-8 aspect-video overflow-hidden bg-black">
+          {loadTrailer && (
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${MEDIA.trailerYouTubeId}`}
+              title="Synvector trailer"
+              className="h-full w-full border-0"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
+          )}
+          {/* Прежний локальный вариант; возврат — ручной правкой кода. */}
+          {/* <video
             className="h-full w-full object-cover"
             controls
             poster="/media/Synvector_02-2.mp4"
           >
             <source src="/media/Synvector_02-2.mp4" type="video/mp4" />
-          </video>
+          </video> */}
+        </div>
+        <div className="mt-4 text-center">
+          <a
+            href={`https://www.youtube.com/watch?v=${MEDIA.trailerYouTubeId}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-cyan-300 underline underline-offset-4 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300"
+          >
+            Watch on YouTube
+          </a>
         </div>
       </div>
     </section>
@@ -700,7 +741,6 @@ function FAQ() {
 
   const faqs = [
     { q: "What platforms will be supported?", a: "PC at launch. Consoles TBD." },
-    { q: "Will there be multiplayer?", a: "Co-op and competitive modes are planned post-launch." },
     { q: "When is the release date?", a: "To be announced. Follow our socials for updates." },
   ];
 
